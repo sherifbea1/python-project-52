@@ -3,3 +3,4 @@ python-dotenv
 dj-database-url
 gunicorn
 psycopg2-binary
+django-bootstrap5==23.3
