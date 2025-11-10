@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Statuses</h1>
+<a href="{% url 'status_create' %}" class="btn btn-primary mb-3">Create status</a>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for status in statuses %}
+    <tr>
+      <td>{{ status.id }}</td>
+      <td>{{ status.name }}</td>
+      <td>
+        <a href="{% url 'status_update' status.id %}" class="btn btn-sm btn-warning">Edit</a>
+        <a href="{% url 'status_delete' status.id %}" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
