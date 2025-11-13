@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+  <h1 class="mb-4">{{ task.name }}</h1>
+
+  <p><strong>Status:</strong> {{ task.status.name }}</p>
+
+  <p><strong>Executor:</strong>
+    {% if task.executor %}
+      {{ task.executor.username }}
+    {% else %}
+      —
+    {% endif %}
+  </p>
+
+  <p><strong>Author:</strong> {{ task.author.username }}</p>
+
+  {% if task.labels.all %}
+    <p><strong>Labels:</strong>
+      {% for label in task.labels.all %}
+        <span class="badge bg-info text-dark">{{ label.name }}</span>
+      {% empty %}
+        —
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  <p><strong>Description:</strong></p>
+  <p>{{ task.description|linebreaks }}</p>
+
+  <div class="mt-4">
+    <a href="{% url 'task_list' %}" class="btn btn-secondary">Back</a>
+
+    {% if task.author == user %}
+      <a href="{% url 'task_update' task.id %}" class="btn btn-warning">Edit</a>
+      <a href="{% url 'task_delete' task.id %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+  </div>
+{% endblock %}

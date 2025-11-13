@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+  <h1>{% if object %}Update task{% else %}Create task{% endif %}</h1>
+
+  <form method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary">
+        {% if object %}Update{% else %}Create{% endif %}
+      </button>
+      <a href="{% url 'task_list' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

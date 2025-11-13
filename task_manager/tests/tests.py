@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 class UserCRUDTest(TestCase):
 
     def setUp(self):
-        # Создаём тестового пользователя
         self.user = User.objects.create_user(
             username='testuser',
             password='password123',

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<h1>{% if object %}Edit{% else %}Create{% endif %} label</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary mt-2">
+    {% if object %}Update{% else %}Create{% endif %}
+  </button>
+  <a href="{% url 'label_list' %}" class="btn btn-secondary mt-2">Cancel</a>
+</form>
+{% endblock %}

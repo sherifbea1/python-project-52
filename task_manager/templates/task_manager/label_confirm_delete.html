@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<h1>Delete label</h1>
+<p>Are you sure you want to delete "{{ object.name }}"?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Yes, delete</button>
+  <a href="{% url 'label_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

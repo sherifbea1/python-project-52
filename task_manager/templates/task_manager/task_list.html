@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<h1>Tasks</h1>
+
+<a href="{% url 'task_create' %}" class="btn btn-primary mb-3">Create task</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Executor</th>
+      <th>Author</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+      <tr>
+        <td>{{ task.id }}</td>
+        <td><a href="{% url 'task_detail' task.id %}">{{ task.name }}</a></td>
+        <td>{{ task.status.name }}</td>
+        <td>
+          {% if task.executor %}
+            {{ task.executor.username }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>{{ task.author.username }}</td>
+        <td>
+          <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-warning">Edit</a>
+          {% if task.author == user %}
+            <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger">Delete</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6">No tasks yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
