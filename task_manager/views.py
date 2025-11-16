@@ -14,8 +14,6 @@ def index(request):
     return render(request, 'task_manager/index.html')
 
 
-# ------------------ USERS ------------------
-
 class UserListView(ListView):
     model = User
     template_name = 'task_manager/user_list.html'
@@ -88,8 +86,6 @@ class UserLogoutView(LogoutView):
         return super().dispatch(request, *args, **kwargs)
 
 
-# ------------------ STATUSES ------------------
-
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
     template_name = 'task_manager/status_list.html'
@@ -134,13 +130,42 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             return redirect('status_list')
 
 
-# ------------------ TASKS ------------------
-
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'task_manager/task_list.html'
     context_object_name = 'tasks'
     ordering = ['-created_at']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        status_id = self.request.GET.get("status")
+        executor_id = self.request.GET.get("executor")
+        label_id = self.request.GET.get("labels")
+        only_my = self.request.GET.get("only_my")
+
+        if status_id:
+            queryset = queryset.filter(status_id=status_id)
+
+        if executor_id:
+            queryset = queryset.filter(executor_id=executor_id)
+
+        if label_id:
+            queryset = queryset.filter(labels__id=label_id)
+
+        if only_my:
+            queryset = queryset.filter(author=self.request.user)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["statuses"] = Status.objects.all()
+        context["users"] = User.objects.all()
+        context["labels"] = Label.objects.all()
+
+        return context
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
@@ -189,8 +214,6 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         messages.success(request, 'Task deleted successfully')
         return response
 
-
-# ------------------ LABELS ------------------
 
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label

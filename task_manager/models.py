@@ -4,7 +4,6 @@ from django.utils import timezone
 
 
 class Status(models.Model):
-    """Модель статуса задачи."""
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -12,7 +11,6 @@ class Status(models.Model):
 
 
 class Label(models.Model):
-    """Модель метки (Label)."""
     name = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
 
@@ -24,7 +22,6 @@ class Label(models.Model):
 
 
 class Task(models.Model):
-    """Модель задачи (Task)."""
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     status = models.ForeignKey(

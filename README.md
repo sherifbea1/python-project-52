@@ -3,4 +3,4 @@
 
 ### Render
 Приложение задеплоено на Render:
-🔗 https://python-project-52-7hde.onrender.com
+https://python-project-52-7hde.onrender.com
