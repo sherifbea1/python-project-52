@@ -287,3 +287,4 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(request, 'Label deleted successfully.')
         return response
+    

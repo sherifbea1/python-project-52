@@ -45,3 +45,4 @@ class LabelCRUDTests(TestCase):
         self.assertFalse(
             Label.objects.filter(id=self.label.id).exists()
         )
+        

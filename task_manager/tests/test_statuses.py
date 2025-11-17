@@ -53,3 +53,4 @@ class StatusCRUDTests(TestCase):
 
     def test_cannot_delete_status_linked_to_task(self):
         pass
+    
