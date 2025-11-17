@@ -30,8 +30,9 @@ jobs:
     env:
       DATABASE_URL: postgres://django:django@localhost:5432/django
       SECRET_KEY: testsecret
-      DEBUG: false
+      DEBUG: "False"
       ROLLBAR_ACCESS_TOKEN: testtoken
+      PYTHONUNBUFFERED: 1
 
     steps:
       - name: Checkout code
@@ -40,19 +41,25 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest pytest-django
 
       - name: Run flake8
         run: |
           pip install flake8
           flake8 .
 
-      - name: Run Django tests
+      - name: Run Django migrations
         run: |
+          export DJANGO_SETTINGS_MODULE=hexlet_code.settings
           python manage.py migrate
-          python manage.py test
+
+      - name: Run tests with pytest
+        run: |
+          export DJANGO_SETTINGS_MODULE=hexlet_code.settings
+          pytest -vv
