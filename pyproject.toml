@@ -12,6 +12,7 @@ authors = [
 dependencies = [
     "Django>=4.2.0",
     "rollbar",
+    "django-bootstrap5",
 ]
 
 [project.optional-dependencies]
