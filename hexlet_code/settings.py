@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+
 from dotenv import load_dotenv
 import dj_database_url
 import rollbar
@@ -10,7 +11,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
-ALLOWED_HOSTS = ["webserver", "localhost", "127.0.0.1"]
+
+ALLOWED_HOSTS = [
+    "webserver",
+    "localhost",
+    "127.0.0.1",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,15 +61,37 @@ WSGI_APPLICATION = 'hexlet_code.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3')}"
+        default=(
+            f"sqlite:///{BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3')}"
+        )
     )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        )
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        )
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        )
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        )
+    },
 ]
 
 LANGUAGE_CODE = 'en-us'
@@ -80,7 +108,6 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-
 ROLLBAR = {
     'access_token': 'a8b95daf73be4bf68bbad44e80b74db9',
     'environment': 'development' if DEBUG else 'production',
@@ -88,8 +115,7 @@ ROLLBAR = {
 }
 
 rollbar.init(
-    ROLLBAR['access_token'],
-    ROLLBAR['environment'],
+    access_token=ROLLBAR['access_token'],
+    environment=ROLLBAR['environment'],
     root=str(ROLLBAR['root']),
 )
-

@@ -43,5 +43,7 @@ https://python-project-52-7hde.onrender.com
 
 ## Локальный запуск
 make install
+
 make migrate
+
 make run

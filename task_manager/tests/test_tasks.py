@@ -7,8 +7,14 @@ from task_manager.models import Status, Task
 class TaskCRUDTests(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username='user1', password='pass123')
-        self.other_user = User.objects.create_user(username='user2', password='pass123')
+        self.user = User.objects.create_user(
+            username='user1',
+            password='pass123'
+        )
+        self.other_user = User.objects.create_user(
+            username='user2',
+            password='pass123'
+        )
 
         self.status = Status.objects.create(name='In progress')
 
@@ -44,7 +50,11 @@ class TaskCRUDTests(TestCase):
             'status': self.status.id,
             'executor': self.other_user.id
         }
-        response = self.client.post(reverse('task_create'), data, follow=True)
+        response = self.client.post(
+            reverse('task_create'),
+            data,
+            follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Task.objects.filter(name='New task').exists())
         self.assertContains(response, 'Task created successfully')
@@ -58,7 +68,9 @@ class TaskCRUDTests(TestCase):
             'executor': self.other_user.id
         }
         response = self.client.post(
-            reverse('task_update', args=[self.task.id]), data, follow=True
+            reverse('task_update', args=[self.task.id]),
+            data,
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.task.refresh_from_db()
@@ -67,13 +79,19 @@ class TaskCRUDTests(TestCase):
 
     def test_delete_task_by_author(self):
         self.client.login(username='user1', password='pass123')
-        response = self.client.post(reverse('task_delete', args=[self.task.id]), follow=True)
+        response = self.client.post(
+            reverse('task_delete', args=[self.task.id]),
+            follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Task.objects.filter(id=self.task.id).exists())
         self.assertContains(response, 'Task deleted successfully')
 
     def test_delete_task_by_not_author(self):
         self.client.login(username='user2', password='pass123')
-        response = self.client.post(reverse('task_delete', args=[self.task.id]), follow=True)
+        response = self.client.post(
+            reverse('task_delete', args=[self.task.id]),
+            follow=True
+        )
         self.assertTrue(Task.objects.filter(id=self.task.id).exists())
         self.assertContains(response, "You cannot delete someone else")

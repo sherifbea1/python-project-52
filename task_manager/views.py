@@ -1,10 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin
+)
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+    DetailView
+)
 from django.db.models import ProtectedError
 
 from .models import Status, Task, Label
@@ -14,6 +23,9 @@ def index(request):
     return render(request, 'task_manager/index.html')
 
 
+# -----------------------------
+# Users
+# -----------------------------
 class UserListView(ListView):
     model = User
     template_name = 'task_manager/user_list.html'
@@ -66,7 +78,10 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             messages.success(self.request, 'User deleted successfully.')
             return super().delete(request, *args, **kwargs)
         except ProtectedError:
-            messages.error(self.request, 'Cannot delete user because they are assigned to tasks.')
+            messages.error(
+                self.request,
+                'Cannot delete user because they are assigned to tasks.'
+            )
             return redirect('user_list')
 
 
@@ -86,6 +101,9 @@ class UserLogoutView(LogoutView):
         return super().dispatch(request, *args, **kwargs)
 
 
+# -----------------------------
+# Statuses
+# -----------------------------
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
     template_name = 'task_manager/status_list.html'
@@ -126,10 +144,16 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             messages.success(request, 'Status deleted successfully.')
             return response
         except ProtectedError:
-            messages.error(request, 'Cannot delete status because it is in use.')
+            messages.error(
+                request,
+                'Cannot delete status because it is in use.'
+            )
             return redirect('status_list')
 
 
+# -----------------------------
+# Tasks
+# -----------------------------
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'task_manager/task_list.html'
@@ -146,13 +170,10 @@ class TaskListView(LoginRequiredMixin, ListView):
 
         if status_id:
             queryset = queryset.filter(status_id=status_id)
-
         if executor_id:
             queryset = queryset.filter(executor_id=executor_id)
-
         if label_id:
             queryset = queryset.filter(labels__id=label_id)
-
         if only_my:
             queryset = queryset.filter(author=self.request.user)
 
@@ -160,11 +181,9 @@ class TaskListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context["statuses"] = Status.objects.all()
         context["users"] = User.objects.all()
         context["labels"] = Label.objects.all()
-
         return context
 
 
@@ -206,15 +225,21 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().author == self.request.user
 
     def handle_no_permission(self):
-        messages.error(self.request, "You cannot delete someone else's task.")
+        messages.error(
+            self.request,
+            "You cannot delete someone else's task."
+        )
         return redirect('task_list')
 
     def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)
-        messages.success(request, 'Task deleted successfully')
+        messages.success(request, 'Task deleted successfully.')
         return response
 
 
+# -----------------------------
+# Labels
+# -----------------------------
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
     template_name = 'task_manager/label_list.html'
@@ -251,9 +276,14 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         label = self.get_object()
+
         if label.tasks.exists():
-            messages.error(request, 'Cannot delete label because it is associated with tasks.')
+            messages.error(
+                request,
+                'Cannot delete label because it is associated with tasks.'
+            )
             return redirect('label_list')
+
         response = super().delete(request, *args, **kwargs)
         messages.success(request, 'Label deleted successfully.')
         return response

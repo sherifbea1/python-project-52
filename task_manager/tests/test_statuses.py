@@ -6,7 +6,10 @@ from task_manager.models import Status
 
 class StatusCRUDTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='password123'
+        )
         self.client.login(username='testuser', password='password123')
 
         self.status = Status.objects.create(name='In progress')
@@ -22,7 +25,11 @@ class StatusCRUDTests(TestCase):
         self.assertContains(response, 'In progress')
 
     def test_create_status(self):
-        response = self.client.post(reverse('status_create'), {'name': 'New status'}, follow=True)
+        response = self.client.post(
+            reverse('status_create'),
+            {'name': 'New status'},
+            follow=True
+        )
         self.assertRedirects(response, reverse('status_list'))
         self.assertTrue(Status.objects.filter(name='New status').exists())
 
@@ -37,10 +44,12 @@ class StatusCRUDTests(TestCase):
         self.assertEqual(self.status.name, 'Updated status')
 
     def test_delete_status(self):
-        response = self.client.post(reverse('status_delete', args=[self.status.id]), follow=True)
+        response = self.client.post(
+            reverse('status_delete', args=[self.status.id]),
+            follow=True
+        )
         self.assertRedirects(response, reverse('status_list'))
         self.assertFalse(Status.objects.filter(id=self.status.id).exists())
 
     def test_cannot_delete_status_linked_to_task(self):
-
         pass
