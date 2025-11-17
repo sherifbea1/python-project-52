@@ -1,17 +1,25 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "hexlet-code"
 version = "0.1.0"
-description = "Your project description"
+description = "Task Manager Project"
 authors = [
     {name = "Your Name", email = "your.email@example.com"},
+]
+dependencies = [
+    "Django>=4.2.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=6.0",
-    "flake8>=4.0",
+    "flake8>=6.0.0",
+    "pytest>=7.0.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hexlet_code*", "task_manager*"]
+exclude = ["templates*", "tests*", "static*", "manage.py"]

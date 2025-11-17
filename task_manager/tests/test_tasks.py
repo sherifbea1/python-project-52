@@ -95,4 +95,3 @@ class TaskCRUDTests(TestCase):
         )
         self.assertTrue(Task.objects.filter(id=self.task.id).exists())
         self.assertContains(response, "You cannot delete someone else")
-        
