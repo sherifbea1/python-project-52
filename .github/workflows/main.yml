@@ -2,11 +2,9 @@ name: Django CI
 
 on:
   push:
-    branches:
-      - "**"
+    branches: ["**"]
   pull_request:
-    branches:
-      - "**"
+    branches: ["**"]
 
 jobs:
   build:
@@ -30,9 +28,9 @@ jobs:
     env:
       DATABASE_URL: postgres://django:django@localhost:5432/django
       SECRET_KEY: testsecret
-      DEBUG: "False"
+      DEBUG: false
       ROLLBAR_ACCESS_TOKEN: testtoken
-      PYTHONUNBUFFERED: 1
+      DJANGO_SETTINGS_MODULE: hexlet_code.settings
 
     steps:
       - name: Checkout code
@@ -41,7 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
@@ -54,12 +52,7 @@ jobs:
           pip install flake8
           flake8 .
 
-      - name: Run Django migrations
+      - name: Run Django tests
         run: |
-          export DJANGO_SETTINGS_MODULE=hexlet_code.settings
           python manage.py migrate
-
-      - name: Run tests with pytest
-        run: |
-          export DJANGO_SETTINGS_MODULE=hexlet_code.settings
-          pytest -vv
+          pytest -vv --ds=hexlet_code.settings
