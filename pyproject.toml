@@ -11,6 +11,7 @@ authors = [
 ]
 dependencies = [
     "Django>=4.2.0",
+    "rollbar",
 ]
 
 [project.optional-dependencies]
