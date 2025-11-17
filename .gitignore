@@ -15,10 +15,10 @@ venv/
 # Django
 db.sqlite3
 /staticfiles/
-/media/
-/*.log
+media/
+*.log
 
-# VSCode
+# VS Code / PyCharm
 .vscode/
 .idea/
 
@@ -26,5 +26,3 @@ db.sqlite3
 .DS_Store
 Thumbs.db
 
-# Migrations
-# */migrations/
