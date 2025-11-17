@@ -13,6 +13,9 @@ dependencies = [
     "Django>=4.2.0",
     "rollbar",
     "django-bootstrap5",
+    "python-dotenv",
+    "dj-database-url",
+    "psycopg2-binary", 
 ]
 
 [project.optional-dependencies]
