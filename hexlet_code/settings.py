@@ -60,11 +60,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hexlet_code.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=(
-            f"sqlite:///{BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3')}"
-        )
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3'),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
