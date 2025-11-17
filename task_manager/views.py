@@ -23,9 +23,6 @@ def index(request):
     return render(request, 'task_manager/index.html')
 
 
-# -----------------------------
-# Users
-# -----------------------------
 class UserListView(ListView):
     model = User
     template_name = 'task_manager/user_list.html'
@@ -101,9 +98,6 @@ class UserLogoutView(LogoutView):
         return super().dispatch(request, *args, **kwargs)
 
 
-# -----------------------------
-# Statuses
-# -----------------------------
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
     template_name = 'task_manager/status_list.html'
@@ -150,10 +144,6 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             )
             return redirect('status_list')
 
-
-# -----------------------------
-# Tasks
-# -----------------------------
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'task_manager/task_list.html'
@@ -237,9 +227,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return response
 
 
-# -----------------------------
-# Labels
-# -----------------------------
+
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
     template_name = 'task_manager/label_list.html'

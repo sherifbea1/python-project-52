@@ -1,5 +1,5 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 import dj_database_url
@@ -12,11 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = [
-    "webserver",
-    "localhost",
-    "127.0.0.1",
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -25,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'django_bootstrap5',
     'task_manager',
 ]
@@ -37,10 +34,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'hexlet_code.urls'
+WSGI_APPLICATION = 'hexlet_code.wsgi.application'
 
 TEMPLATES = [
     {
@@ -57,13 +56,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'hexlet_code.wsgi.application'
+DEFAULT_DB_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3'),
-    }
+    'default': dj_database_url.parse(
+        os.getenv("DATABASE_URL", DEFAULT_DB_URL),
+        conn_max_age=600,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -71,27 +70,28 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': (
             'django.contrib.auth.password_validation.'
             'UserAttributeSimilarityValidator'
-        )
+        ),
     },
     {
         'NAME': (
             'django.contrib.auth.password_validation.'
             'MinimumLengthValidator'
-        )
+        ),
     },
     {
         'NAME': (
             'django.contrib.auth.password_validation.'
             'CommonPasswordValidator'
-        )
+        ),
     },
     {
         'NAME': (
             'django.contrib.auth.password_validation.'
             'NumericPasswordValidator'
-        )
+        ),
     },
 ]
+
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -108,7 +108,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 ROLLBAR = {
-    'access_token': 'a8b95daf73be4bf68bbad44e80b74db9',
+    'access_token': os.getenv("ROLLBAR_ACCESS_TOKEN", "a8b95daf73be4bf68bbad44e80b74db9"),
     'environment': 'development' if DEBUG else 'production',
     'root': BASE_DIR,
 }
