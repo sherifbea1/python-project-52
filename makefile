@@ -12,6 +12,3 @@ build:
 
 render-start:
 	gunicorn hexlet_code.wsgi
-
-test:
-	PYTHONPATH=. uv run pytest task_manager/tests -vv --ds=hexlet_code.settings

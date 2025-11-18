@@ -30,7 +30,7 @@ jobs:
       SECRET_KEY: testsecret
       DEBUG: false
       ROLLBAR_ACCESS_TOKEN: testtoken
-      DJANGO_SETTINGS_MODULE: hexlet_code.settings
+      DJANGO_SETTINGS_MODULE: task_manager.settings
 
     steps:
       - name: Checkout code

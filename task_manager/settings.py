@@ -34,12 +34,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
-ROOT_URLCONF = 'hexlet_code.urls'
-WSGI_APPLICATION = 'hexlet_code.wsgi.application'
+ROOT_URLCONF = 'task_manager.urls'
+WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 TEMPLATES = [
     {
