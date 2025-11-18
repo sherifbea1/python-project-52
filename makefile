@@ -14,4 +14,4 @@ render-start:
 	gunicorn hexlet_code.wsgi
 
 test:
-	PYTHONPATH=. pytest task_manager/tests -vv --ds=hexlet_code.settings
+	PYTHONPATH=. uv run pytest task_manager/tests -vv --ds=hexlet_code.settings
