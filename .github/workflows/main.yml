@@ -52,6 +52,12 @@ jobs:
           pip install flake8
           flake8 .
 
+      - name: Clear pytest cache
+        run: |
+          python -m pytest --cache-clear 2>/dev/null || true
+          find . -name ".pytest_cache" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+
       - name: Run Django tests
         run: |
           python manage.py migrate
