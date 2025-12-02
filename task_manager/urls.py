@@ -1,119 +1,30 @@
-import os
-from pathlib import Path
+from django.urls import path
+from . import views
 
-from dotenv import load_dotenv
-import dj_database_url
-import rollbar
+urlpatterns = [
+    path('', views.index, name='home'),
 
-load_dotenv()
+    path('users/', views.UserListView.as_view(), name='user_list'),
+    path('users/create/', views.UserCreateView.as_view(), name='user_create'),
+    path('users/<int:pk>/update/', views.UserUpdateView.as_view(), name='user_update'),
+    path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='user_delete'),
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+    path('login/', views.UserLoginView.as_view(), name='login'),
+    path('logout/', views.UserLogoutView.as_view(), name='logout'),
 
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key")
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+    path('statuses/', views.StatusListView.as_view(), name='status_list'),
+    path('statuses/create/', views.StatusCreateView.as_view(), name='status_create'),
+    path('statuses/<int:pk>/update/', views.StatusUpdateView.as_view(), name='status_update'),
+    path('statuses/<int:pk>/delete/', views.StatusDeleteView.as_view(), name='status_delete'),
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    path('tasks/', views.TaskListView.as_view(), name='task_list'),
+    path('tasks/create/', views.TaskCreateView.as_view(), name='task_create'),
+    path('tasks/<int:pk>/', views.TaskDetailView.as_view(), name='task_detail'),
+    path('tasks/<int:pk>/update/', views.TaskUpdateView.as_view(), name='task_update'),
+    path('tasks/<int:pk>/delete/', views.TaskDeleteView.as_view(), name='task_delete'),
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'django_bootstrap5',
-    'task_manager',
+    path('labels/', views.LabelListView.as_view(), name='label_list'),
+    path('labels/create/', views.LabelCreateView.as_view(), name='label_create'),
+    path('labels/<int:pk>/update/', views.LabelUpdateView.as_view(), name='label_update'),
+    path('labels/<int:pk>/delete/', views.LabelDeleteView.as_view(), name='label_delete'),
 ]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]
-
-ROOT_URLCONF = 'task_manager.urls'
-WSGI_APPLICATION = 'task_manager.wsgi.application'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-DEFAULT_DB_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-
-DATABASES = {
-    'default': dj_database_url.parse(
-        os.getenv("DATABASE_URL", DEFAULT_DB_URL),
-        conn_max_age=600,
-    )
-}
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'UserAttributeSimilarityValidator'
-        ),
-    },
-    {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'MinimumLengthValidator'
-        ),
-    },
-    {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'CommonPasswordValidator'
-        ),
-    },
-    {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'NumericPasswordValidator'
-        ),
-    },
-]
-
-
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/login/'
-
-ROLLBAR = {
-    'access_token': os.getenv("ROLLBAR_ACCESS_TOKEN", "a8b95daf73be4bf68bbad44e80b74db9"),
-    'environment': 'development' if DEBUG else 'production',
-    'root': BASE_DIR,
-}
-
-rollbar.init(
-    access_token=ROLLBAR['access_token'],
-    environment=ROLLBAR['environment'],
-    root=str(ROLLBAR['root']),
-)
