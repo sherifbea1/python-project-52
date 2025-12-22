@@ -31,17 +31,14 @@ class UserListView(ListView):
 
 
 class UserCreateView(CreateView):
-    model = User
+    form_class = UserCreationForm
     template_name = 'task_manager/user_form.html'
-    fields = ['username', 'password', 'first_name', 'last_name', 'email']
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
-        user = form.save(commit=False)
-        user.set_password(form.cleaned_data['password'])
-        user.save()
+        response = super().form_valid(form)
         messages.success(self.request, 'User registered successfully.')
-        return super().form_valid(form)
+        return response
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
