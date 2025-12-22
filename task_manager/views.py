@@ -1,19 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin,
-    UserPassesTestMixin
-)
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import (
-    ListView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-    DetailView
-)
+from django.views.generic import CreateView
 from django.db.models import ProtectedError
 
 from .models import Status, Task, Label
@@ -30,9 +19,10 @@ class UserListView(ListView):
     ordering = ['id']
 
 
+
 class UserCreateView(CreateView):
+    model = User
     form_class = UserCreationForm
-    template_name = 'task_manager/user_form.html'
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
