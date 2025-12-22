@@ -26,10 +26,16 @@
 
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><span class="nav-link">{{ user.username }}</span></li>
-                        <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a></li>
+                    <li class="nav-item">
+                    <span class="nav-link">{{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link text-danger" href="{% url 'logout' %}">Выход</a>
+                    </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Вход</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
