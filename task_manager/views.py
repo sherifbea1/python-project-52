@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -86,12 +87,12 @@ class UserLoginView(LoginView):
         return reverse_lazy('home')
 
 
-class UserLogoutView(LogoutView):
-    next_page = reverse_lazy('login')
 
-    def dispatch(self, request, *args, **kwargs):
-        messages.success(self.request, 'You have been logged out.')
-        return super().dispatch(request, *args, **kwargs)
+class UserLogoutView(LogoutView):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        messages.success(request, 'Вы разлогинены')
+        return redirect('home')
 
 
 class StatusListView(LoginRequiredMixin, ListView):
