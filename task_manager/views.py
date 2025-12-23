@@ -82,7 +82,7 @@ class UserLoginView(LoginView):
     template_name = 'task_manager/login.html'
 
     def get_success_url(self):
-        messages.success(self.request, 'You have logged in successfully.')
+        messages.success(self.request, 'Вы залогинены')
         return reverse_lazy('home')
 
 
