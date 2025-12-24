@@ -14,7 +14,6 @@ from django.views.generic import (
     DetailView,
 )
 from django.db.models import ProtectedError
-
 from .models import Status, Task, Label
 
 
@@ -88,8 +87,8 @@ class UserLoginView(LoginView):
 
 
 
-class UserLogoutView(LogoutView):
-    def get(self, request, *args, **kwargs):
+class UserLogoutView(View):
+    def get(self, request):
         logout(request)
         messages.success(request, 'Вы разлогинены')
         return redirect('home')
