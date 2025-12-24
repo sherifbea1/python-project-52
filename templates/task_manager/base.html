@@ -1,6 +1,6 @@
 {% load django_bootstrap5 %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Task Manager{% endblock %}</title>
@@ -8,58 +8,66 @@
 </head>
 <body class="container mt-4">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm rounded">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">Task Manager</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm rounded">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">Task Manager</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'user_list' %}">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'status_list' %}">Statuses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'task_list' %}">Tasks</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'label_list' %}">Labels</a></li>
-                </ul>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_list' %}">Пользователи</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'status_list' %}">Статусы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'task_list' %}">Задачи</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'label_list' %}">Метки</a>
+                </li>
+            </ul>
 
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link">{{ user.username }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="{% url 'logout' %}">Выход</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Вход</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_create' %}">Регистрация</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link">{{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">Выход</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Вход</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_create' %}">Регистрация</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    {% if messages %}
-      <div class="container mt-2">
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
+{% if messages %}
+  <div class="container mt-2">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+<main>
+    {% block content %}{% endblock %}
+</main>
 
-    {% bootstrap_javascript %}
+{% bootstrap_javascript %}
 </body>
 </html>
