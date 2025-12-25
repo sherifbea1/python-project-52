@@ -25,7 +25,6 @@ def index(request):
 class UserListView(ListView):
     model = User
     template_name = 'task_manager/user_list.html'
-    context_object_name = 'object_list'
     ordering = ['id']
 
 
