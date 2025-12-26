@@ -16,7 +16,7 @@ from django.views.generic import (
 from django.db.models import ProtectedError
 
 from .models import Status, Task, Label
-from .forms import UserCreateForm
+from .forms import UserCreateForm, UserUpdateForm
 
 
 def index(request):
@@ -44,15 +44,21 @@ class UserCreateView(CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
+    form_class = UserUpdateForm
     template_name = 'task_manager/user_form.html'
-    fields = ['first_name', 'last_name', 'username', 'email']
     success_url = reverse_lazy('user_list')
 
     def test_func(self):
         return self.get_object() == self.request.user
 
     def form_valid(self, form):
-        messages.success(self.request, 'Пользователь успешно изменён')
+        password1 = form.cleaned_data.get("password1")
+        password2 = form.cleaned_data.get("password2")
+
+        if password1 and password1 == password2:
+            self.object.set_password(password1)
+
+        messages.success(self.request, 'User updated successfully.')
         return super().form_valid(form)
 
 
