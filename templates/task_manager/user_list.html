@@ -8,6 +8,7 @@
     <tr>
       <th>ID</th>
       <th>Имя</th>
+      <th>Username</th>
       <th>Дата создания</th>
       <th></th>
     </tr>
@@ -17,9 +18,9 @@
     <tr>
       <td>{{ user.id }}</td>
       <td>{{ user.first_name }} {{ user.last_name }}</td>
+      <td>{{ user.username }}</td>
       <td>{{ user.date_joined|date:"d.m.Y" }}</td>
       <td>
-        
         <a href="{% url 'user_update' user.id %}">Изменить</a>
         <br>
         <a href="{% url 'user_delete' user.id %}">Удалить</a>
