@@ -1,15 +1,14 @@
-{% extends "base.html" %}
+{% extends "task_manager/base.html" %}
 {% load django_bootstrap5 %}
 
-
 {% block content %}
-<h1>{% if object %}Edit{% else %}Create{% endif %} User</h1>
+<h1>Регистрация</h1>
 
 <form method="post">
   {% csrf_token %}
   {% bootstrap_form form %}
   <button type="submit" class="btn btn-primary mt-2">
-    {% if object %}Update{% else %}Create{% endif %}
+    Зарегистрировать
   </button>
 </form>
 {% endblock %}

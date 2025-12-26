@@ -23,7 +23,7 @@ def index(request):
     return render(request, 'task_manager/index.html')
 
 
-# ===== USERS =====
+
 
 class UserListView(ListView):
     model = User
@@ -34,13 +34,12 @@ class UserListView(ListView):
 class UserCreateView(CreateView):
     model = User
     form_class = UserCreateForm
-    template_name = 'task_manager/user_form.html'
-    success_url = reverse_lazy('login')
+    template_name = "task_manager/user_form.html"
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, 'Пользователь успешно зарегистрирован')
-        return response
+        messages.success(self.request, "Пользователь успешно зарегистрирован")
+        return super().form_valid(form)
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -96,7 +95,7 @@ class UserLogoutView(View):
         return redirect('home')
 
 
-# ===== STATUSES =====
+
 
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
@@ -145,7 +144,7 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             return redirect('status_list')
 
 
-# ===== TASKS =====
+
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -230,7 +229,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return response
 
 
-# ===== LABELS =====
+
 
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label

@@ -4,12 +4,18 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class UserCreateForm(UserCreationForm):
+    first_name = forms.CharField(label="Имя")
+    last_name = forms.CharField(label="Фамилия")
+
     class Meta:
         model = User
         fields = (
+            "username",
             "first_name",
             "last_name",
-            "username",
             "password1",
             "password2",
         )
+        labels = {
+            "username": "Имя пользователя",
+        }
