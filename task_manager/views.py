@@ -76,7 +76,7 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            messages.success(request, 'Пользователь успешно удалён')
+            messages.success(request, 'Пользователь успешно удален')
             return super().delete(request, *args, **kwargs)
         except ProtectedError:
             messages.error(
