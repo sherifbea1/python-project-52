@@ -66,10 +66,19 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'task_manager/user_confirm_delete.html'
     success_url = reverse_lazy('user_list')
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object != request.user:
+            messages.error(
+                request,
+                'Вы не можете удалить другого пользователя'
+            )
+            return redirect('user_list')
+
         try:
             messages.success(request, 'Пользователь успешно удален')
-            return super().delete(request, *args, **kwargs)
+            return super().post(request, *args, **kwargs)
         except ProtectedError:
             messages.error(
                 request,
