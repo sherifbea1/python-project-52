@@ -58,7 +58,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if password1 and password1 == password2:
             self.object.set_password(password1)
 
-        messages.success(self.request, 'User updated successfully.')
+        messages.success(self.request, 'Пользователь успешно изменен')
         return super().form_valid(form)
 
 
