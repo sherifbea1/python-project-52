@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -23,7 +23,9 @@ def index(request):
     return render(request, 'task_manager/index.html')
 
 
-
+# =====================
+# USERS
+# =====================
 
 class UserListView(ListView):
     model = User
@@ -34,26 +36,23 @@ class UserListView(ListView):
 class UserCreateView(CreateView):
     model = User
     form_class = UserCreateForm
-    template_name = "task_manager/user_form.html"
-    success_url = reverse_lazy("login")
+    template_name = 'task_manager/user_form.html'
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
-        messages.success(self.request, "Пользователь успешно зарегистрирован")
+        messages.success(self.request, 'Пользователь успешно зарегистрирован')
         return super().form_valid(form)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'task_manager/user_form.html'
     success_url = reverse_lazy('user_list')
 
-    def test_func(self):
-        return self.get_object() == self.request.user
-
     def form_valid(self, form):
-        password1 = form.cleaned_data.get("password1")
-        password2 = form.cleaned_data.get("password2")
+        password1 = form.cleaned_data.get('password1')
+        password2 = form.cleaned_data.get('password2')
 
         if password1 and password1 == password2:
             self.object.set_password(password1)
@@ -79,7 +78,6 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
             return redirect('user_list')
 
 
-
 class UserLoginView(LoginView):
     template_name = 'task_manager/login.html'
 
@@ -95,7 +93,9 @@ class UserLogoutView(View):
         return redirect('home')
 
 
-
+# =====================
+# STATUSES
+# =====================
 
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
@@ -144,7 +144,9 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             return redirect('status_list')
 
 
-
+# =====================
+# TASKS
+# =====================
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -155,10 +157,10 @@ class TaskListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        status_id = self.request.GET.get("status")
-        executor_id = self.request.GET.get("executor")
-        label_id = self.request.GET.get("labels")
-        only_my = self.request.GET.get("only_my")
+        status_id = self.request.GET.get('status')
+        executor_id = self.request.GET.get('executor')
+        label_id = self.request.GET.get('labels')
+        only_my = self.request.GET.get('only_my')
 
         if status_id:
             queryset = queryset.filter(status_id=status_id)
@@ -173,9 +175,9 @@ class TaskListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["statuses"] = Status.objects.all()
-        context["users"] = User.objects.all()
-        context["labels"] = Label.objects.all()
+        context['statuses'] = Status.objects.all()
+        context['users'] = User.objects.all()
+        context['labels'] = Label.objects.all()
         return context
 
 
@@ -208,20 +210,10 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = 'task_manager/task_confirm_delete.html'
     success_url = reverse_lazy('task_list')
-
-    def test_func(self):
-        return self.get_object().author == self.request.user
-
-    def handle_no_permission(self):
-        messages.error(
-            self.request,
-            'Вы не можете удалить чужую задачу'
-        )
-        return redirect('task_list')
 
     def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)
@@ -229,7 +221,9 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return response
 
 
-
+# =====================
+# LABELS
+# =====================
 
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
