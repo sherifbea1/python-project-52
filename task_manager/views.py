@@ -3,9 +3,8 @@ from django.views.generic import View
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -15,12 +14,16 @@ from django.views.generic import (
     DetailView,
 )
 from django.db.models import ProtectedError
+
 from .models import Status, Task, Label
+from .forms import UserCreateForm
 
 
 def index(request):
     return render(request, 'task_manager/index.html')
 
+
+# ===== USERS =====
 
 class UserListView(ListView):
     model = User
@@ -28,29 +31,29 @@ class UserListView(ListView):
     ordering = ['id']
 
 
-
 class UserCreateView(CreateView):
     model = User
-    form_class = UserCreationForm
+    form_class = UserCreateForm
+    template_name = 'task_manager/user_form.html'
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, 'User registered successfully.')
+        messages.success(self.request, 'Пользователь успешно зарегистрирован')
         return response
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     template_name = 'task_manager/user_form.html'
-    fields = ['username', 'first_name', 'last_name', 'email']
+    fields = ['first_name', 'last_name', 'username', 'email']
     success_url = reverse_lazy('user_list')
 
     def test_func(self):
         return self.get_object() == self.request.user
 
     def form_valid(self, form):
-        messages.success(self.request, 'User updated successfully.')
+        messages.success(self.request, 'Пользователь успешно изменён')
         return super().form_valid(form)
 
 
@@ -63,17 +66,17 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object() == self.request.user
 
     def handle_no_permission(self):
-        messages.error(self.request, "You cannot delete another user.")
+        messages.error(self.request, 'Вы не можете удалить другого пользователя')
         return redirect('user_list')
 
     def delete(self, request, *args, **kwargs):
         try:
-            messages.success(self.request, 'User deleted successfully.')
+            messages.success(request, 'Пользователь успешно удалён')
             return super().delete(request, *args, **kwargs)
         except ProtectedError:
             messages.error(
-                self.request,
-                'Cannot delete user because they are assigned to tasks.'
+                request,
+                'Невозможно удалить пользователя, так как он используется'
             )
             return redirect('user_list')
 
@@ -86,13 +89,14 @@ class UserLoginView(LoginView):
         return reverse_lazy('home')
 
 
-
 class UserLogoutView(View):
     def get(self, request):
         logout(request)
         messages.success(request, 'Вы разлогинены')
         return redirect('home')
 
+
+# ===== STATUSES =====
 
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
@@ -108,7 +112,7 @@ class StatusCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('status_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Status created successfully.')
+        messages.success(self.request, 'Статус успешно создан')
         return super().form_valid(form)
 
 
@@ -119,7 +123,7 @@ class StatusUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('status_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Status updated successfully.')
+        messages.success(self.request, 'Статус успешно изменён')
         return super().form_valid(form)
 
 
@@ -131,14 +135,17 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         try:
             response = super().delete(request, *args, **kwargs)
-            messages.success(request, 'Status deleted successfully.')
+            messages.success(request, 'Статус успешно удалён')
             return response
         except ProtectedError:
             messages.error(
                 request,
-                'Cannot delete status because it is in use.'
+                'Невозможно удалить статус, так как он используется'
             )
             return redirect('status_list')
+
+
+# ===== TASKS =====
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -187,7 +194,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, 'Task created successfully.')
+        messages.success(self.request, 'Задача успешно создана')
         return super().form_valid(form)
 
 
@@ -198,7 +205,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('task_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Task updated successfully.')
+        messages.success(self.request, 'Задача успешно изменена')
         return super().form_valid(form)
 
 
@@ -213,16 +220,17 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def handle_no_permission(self):
         messages.error(
             self.request,
-            "You cannot delete someone else's task."
+            'Вы не можете удалить чужую задачу'
         )
         return redirect('task_list')
 
     def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)
-        messages.success(request, 'Task deleted successfully.')
+        messages.success(request, 'Задача успешно удалена')
         return response
 
 
+# ===== LABELS =====
 
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
@@ -238,7 +246,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('label_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Label created successfully.')
+        messages.success(self.request, 'Метка успешно создана')
         return super().form_valid(form)
 
 
@@ -249,7 +257,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('label_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Label updated successfully.')
+        messages.success(self.request, 'Метка успешно изменена')
         return super().form_valid(form)
 
 
@@ -264,10 +272,10 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
         if label.tasks.exists():
             messages.error(
                 request,
-                'Cannot delete label because it is associated with tasks.'
+                'Невозможно удалить метку, так как она используется'
             )
             return redirect('label_list')
 
         response = super().delete(request, *args, **kwargs)
-        messages.success(request, 'Label deleted successfully.')
+        messages.success(request, 'Метка успешно удалена')
         return response
