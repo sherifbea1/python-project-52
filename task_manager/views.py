@@ -61,24 +61,28 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = 'task_manager/user_confirm_delete.html'
     success_url = reverse_lazy('user_list')
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def test_func(self):
+        return self.get_object() == self.request.user
 
-        if self.object != request.user:
-            messages.error(
-                request,
-                'Вы не можете удалить другого пользователя'
-            )
-            return redirect('user_list')
+    def handle_no_permission(self):
+        messages.error(
+            self.request,
+            'Вы не можете удалить другого пользователя'
+        )
+        return redirect('user_list')
 
+    def delete(self, request, *args, **kwargs):
         try:
-            messages.success(request, 'Пользователь успешно удален')
-            return super().post(request, *args, **kwargs)
+            messages.success(
+                request,
+                'Пользователь успешно удален'
+            )
+            return super().delete(request, *args, **kwargs)
         except ProtectedError:
             messages.error(
                 request,
