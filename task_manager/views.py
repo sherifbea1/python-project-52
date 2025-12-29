@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -107,8 +108,10 @@ class UserLoginView(LoginView):
         return reverse_lazy('home')
 
 
-class UserLogoutView(LogoutView):
-    next_page = reverse_lazy('home')
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'Вы разлогинены')
+    return redirect('home')
 
 
 # =====================

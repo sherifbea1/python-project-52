@@ -31,9 +31,9 @@ urlpatterns = [
         name='login'
     ),
     path(
-        'logout/',
-        views.UserLogoutView.as_view(),
-        name='logout'
+    'logout/',
+    views.user_logout,
+    name='logout'
     ),
 
     path(
