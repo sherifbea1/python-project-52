@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from django.contrib.auth.views import LogoutView
 from django.views.generic import (
     ListView,
     CreateView,
@@ -87,12 +88,8 @@ class UserLoginView(LoginView):
         return reverse_lazy('home')
 
 
-class UserLogoutView(View):
-    def get(self, request):
-        logout(request)
-        messages.success(request, 'Вы разлогинены')
-        return redirect('home')
-
+class UserLogoutView(LogoutView):
+    next_page = reverse_lazy('login')
 
 # =====================
 # STATUSES
