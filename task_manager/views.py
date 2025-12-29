@@ -1,15 +1,15 @@
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LogoutView
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
     DeleteView,
+    DetailView,
 )
 from django.db.models import ProtectedError
 
@@ -42,11 +42,21 @@ class UserCreateView(CreateView):
         return super().form_valid(form)
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'task_manager/user_form.html'
     success_url = reverse_lazy('user_list')
+
+    def test_func(self):
+        return self.get_object() == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(
+            self.request,
+            'Вы не можете изменять другого пользователя'
+        )
+        return redirect('user_list')
 
     def form_valid(self, form):
         password1 = form.cleaned_data.get('password1')
@@ -59,11 +69,20 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = 'task_manager/user_confirm_delete.html'
     success_url = reverse_lazy('user_list')
+
+    def test_func(self):
+        return self.get_object() == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(
+            self.request,
+            'Вы не можете удалить другого пользователя'
+        )
+        return redirect('user_list')
 
     def delete(self, request, *args, **kwargs):
         try:
@@ -90,6 +109,7 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     next_page = reverse_lazy('login')
+
 
 # =====================
 # STATUSES
@@ -208,10 +228,20 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'task_manager/task_confirm_delete.html'
     success_url = reverse_lazy('task_list')
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(
+            self.request,
+            'Вы не можете удалить чужую задачу'
+        )
+        return redirect('task_list')
 
     def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)
