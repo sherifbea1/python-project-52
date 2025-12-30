@@ -1,17 +1,16 @@
 {% extends "base.html" %}
-{% load django_bootstrap5 %}
 
 {% block content %}
-<h1>Tasks</h1>
+<h1>Задачи</h1>
 
-<a href="{% url 'task_create' %}" class="btn btn-primary mb-3">Create task</a>
-
-{# --------------------- ФИЛЬТР --------------------- #}
+<a href="{% url 'task_create' %}" class="btn btn-primary mb-3">
+    Создать задачу
+</a>
 
 <form method="get" class="row mb-4">
 
     <div class="col-md-3">
-        <label>Status</label>
+        <label>Статус</label>
         <select name="status" class="form-select">
             <option value="">---------</option>
             {% for status in statuses %}
@@ -24,7 +23,7 @@
     </div>
 
     <div class="col-md-3">
-        <label>Executor</label>
+        <label>Исполнитель</label>
         <select name="executor" class="form-select">
             <option value="">---------</option>
             {% for user in users %}
@@ -37,7 +36,7 @@
     </div>
 
     <div class="col-md-3">
-        <label>Label</label>
+        <label>Метка</label>
         <select name="labels" class="form-select">
             <option value="">---------</option>
             {% for label in labels %}
@@ -53,27 +52,27 @@
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="only_my"
                    {% if request.GET.only_my %}checked{% endif %}>
-            <label class="form-check-label">Only my tasks</label>
+            <label class="form-check-label">Только мои задачи</label>
         </div>
     </div>
 
     <div class="col-md-1 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Filter</button>
+        <button type="submit" class="btn btn-primary w-100">
+            Показать
+        </button>
     </div>
 
 </form>
-
-{# ------------------ КОНЕЦ ФИЛЬТРА ------------------ #}
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Executor</th>
-            <th>Author</th>
-            <th>Actions</th>
+            <th>Имя</th>
+            <th>Статус</th>
+            <th>Исполнитель</th>
+            <th>Автор</th>
+            <th>Действия</th>
         </tr>
     </thead>
 
@@ -81,29 +80,29 @@
         {% for task in tasks %}
         <tr>
             <td>{{ task.id }}</td>
-            <td><a href="{% url 'task_detail' task.id %}">{{ task.name }}</a></td>
-            <td>{{ task.status.name }}</td>
-
             <td>
-                {% if task.executor %}
-                    {{ task.executor.username }}
-                {% else %}
-                    —
-                {% endif %}
+                <a href="{% url 'task_detail' task.id %}">
+                    {{ task.name }}
+                </a>
             </td>
-
+            <td>{{ task.status.name }}</td>
+            <td>{{ task.executor.username|default:"—" }}</td>
             <td>{{ task.author.username }}</td>
-
             <td>
-                <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-warning">Edit</a>
-
+                <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-warning">
+                    Изменить
+                </a>
                 {% if task.author == user %}
-                    <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger">
+                        Удалить
+                    </a>
                 {% endif %}
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="6">No tasks yet.</td></tr>
+        <tr>
+            <td colspan="6">Нет задач</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
