@@ -18,6 +18,12 @@ from .models import Status, Task, Label
 from .forms import UserCreateForm, UserUpdateForm
 
 
+# ===== Общий миксин авторизации для тестов =====
+class AuthRequiredMixin(LoginRequiredMixin):
+    login_url = reverse_lazy('login')
+    redirect_field_name = None
+
+
 def index(request):
     return render(request, 'task_manager/index.html')
 
@@ -43,7 +49,7 @@ class UserCreateView(CreateView):
         return super().form_valid(form)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserUpdateView(AuthRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'task_manager/user_form.html'
@@ -70,7 +76,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class UserDeleteView(AuthRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = 'task_manager/user_confirm_delete.html'
     success_url = reverse_lazy('user_list')
@@ -103,7 +109,6 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return redirect(self.success_url)
 
 
-
 class UserLoginView(LoginView):
     template_name = 'task_manager/login.html'
 
@@ -122,14 +127,14 @@ def user_logout(request):
 # STATUSES
 # =====================
 
-class StatusListView(LoginRequiredMixin, ListView):
+class StatusListView(AuthRequiredMixin, ListView):
     model = Status
     template_name = 'task_manager/status_list.html'
     context_object_name = 'statuses'
     ordering = ['id']
 
 
-class StatusCreateView(LoginRequiredMixin, CreateView):
+class StatusCreateView(AuthRequiredMixin, CreateView):
     model = Status
     template_name = 'task_manager/status_form.html'
     fields = ['name']
@@ -140,7 +145,7 @@ class StatusCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class StatusUpdateView(LoginRequiredMixin, UpdateView):
+class StatusUpdateView(AuthRequiredMixin, UpdateView):
     model = Status
     template_name = 'task_manager/status_form.html'
     fields = ['name']
@@ -151,7 +156,7 @@ class StatusUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class StatusDeleteView(LoginRequiredMixin, DeleteView):
+class StatusDeleteView(AuthRequiredMixin, DeleteView):
     model = Status
     template_name = 'task_manager/status_confirm_delete.html'
     success_url = reverse_lazy('status_list')
@@ -173,7 +178,7 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
 # TASKS
 # =====================
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskListView(AuthRequiredMixin, ListView):
     model = Task
     template_name = 'task_manager/task_list.html'
     context_object_name = 'tasks'
@@ -206,13 +211,13 @@ class TaskListView(LoginRequiredMixin, ListView):
         return context
 
 
-class TaskDetailView(LoginRequiredMixin, DetailView):
+class TaskDetailView(AuthRequiredMixin, DetailView):
     model = Task
     template_name = 'task_manager/task_detail.html'
     context_object_name = 'task'
 
 
-class TaskCreateView(LoginRequiredMixin, CreateView):
+class TaskCreateView(AuthRequiredMixin, CreateView):
     model = Task
     template_name = 'task_manager/task_form.html'
     fields = ['name', 'description', 'status', 'executor', 'labels']
@@ -224,7 +229,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
+class TaskUpdateView(AuthRequiredMixin, UpdateView):
     model = Task
     template_name = 'task_manager/task_form.html'
     fields = ['name', 'description', 'status', 'executor', 'labels']
@@ -235,7 +240,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class TaskDeleteView(AuthRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'task_manager/task_confirm_delete.html'
     success_url = reverse_lazy('task_list')
@@ -260,14 +265,14 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 # LABELS
 # =====================
 
-class LabelListView(LoginRequiredMixin, ListView):
+class LabelListView(AuthRequiredMixin, ListView):
     model = Label
     template_name = 'task_manager/label_list.html'
     context_object_name = 'labels'
     ordering = ['id']
 
 
-class LabelCreateView(LoginRequiredMixin, CreateView):
+class LabelCreateView(AuthRequiredMixin, CreateView):
     model = Label
     template_name = 'task_manager/label_form.html'
     fields = ['name']
@@ -278,7 +283,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class LabelUpdateView(LoginRequiredMixin, UpdateView):
+class LabelUpdateView(AuthRequiredMixin, UpdateView):
     model = Label
     template_name = 'task_manager/label_form.html'
     fields = ['name']
@@ -289,7 +294,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class LabelDeleteView(LoginRequiredMixin, DeleteView):
+class LabelDeleteView(AuthRequiredMixin, DeleteView):
     model = Label
     template_name = 'task_manager/label_confirm_delete.html'
     success_url = reverse_lazy('label_list')
