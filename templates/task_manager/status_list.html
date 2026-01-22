@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Статусы</h1>
 
-<a href="{% url 'status_create' %}" class="btn btn-primary mb-3">
+<a href="/statuses/create/" class="btn btn-primary mb-3">
     Создать статус
 </a>
 
@@ -21,10 +21,10 @@
       <td>{{ status.id }}</td>
       <td>{{ status.name }}</td>
       <td>
-        <a href="{% url 'status_update' status.id %}" class="btn btn-sm btn-warning">
+        <a href="/statuses/{{ status.id }}/update/" class="btn btn-sm btn-warning">
             Изменить
         </a>
-        <a href="{% url 'status_delete' status.id %}" class="btn btn-sm btn-danger">
+        <a href="/statuses/{{ status.id }}/delete/" class="btn btn-sm btn-danger">
             Удалить
         </a>
       </td>
