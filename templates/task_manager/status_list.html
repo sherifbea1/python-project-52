@@ -3,9 +3,11 @@
 {% block content %}
 <h1>Статусы</h1>
 
-<a href="/statuses/create/" class="btn btn-primary mb-3">
-    Создать статус
-</a>
+<form action="/statuses/create/" method="get" class="mb-3">
+    <button type="submit" class="btn btn-primary">
+        Создать статус
+    </button>
+</form>
 
 <table class="table table-striped">
   <thead>
