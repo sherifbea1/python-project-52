@@ -3,12 +3,9 @@
 {% block content %}
 <h1>Статусы</h1>
 
-<button
-    type="button"
-    class="btn btn-primary mb-3"
-    onclick="window.location.href='/statuses/create/'">
+<a href="{% url 'status_create' %}" class="btn btn-primary mb-3">
     Создать статус
-</button>
+</a>
 
 <table class="table table-striped">
   <thead>
@@ -24,13 +21,17 @@
       <td>{{ status.id }}</td>
       <td>{{ status.name }}</td>
       <td>
-        <a href="/statuses/{{ status.id }}/update/" class="btn btn-sm btn-warning">
+        <a href="{% url 'status_update' status.id %}" class="btn btn-sm btn-warning">
             Изменить
         </a>
-        <a href="/statuses/{{ status.id }}/delete/" class="btn btn-sm btn-danger">
+        <a href="{% url 'status_delete' status.id %}" class="btn btn-sm btn-danger">
             Удалить
         </a>
       </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="3">Нет статусов</td>
     </tr>
     {% endfor %}
   </tbody>
